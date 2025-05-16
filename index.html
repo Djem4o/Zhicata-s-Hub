@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zhicata's Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+  body {
+    background: #121212;
+    color: #eee;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(90deg, #8a2be2, #5a00d1);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header img.logo {
+    height: 50px;
+    object-fit: contain;
+  }
+  nav a {
+    color: #ddd;
+    margin-left: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  nav a:hover {
+    color: #b45fff;
+  }
+  .hero {
+    text-align: center;
+    padding: 60px 20px 100px;
+    background: url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1600&q=80') no-repeat center/cover;
+    text-shadow: 0 0 12px rgba(0,0,0,0.8);
+    position: relative;
+  }
+  .hero img.logo-hero {
+    max-width: 220px;
+    margin-bottom: 25px;
+  }
+  .hero h2 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .hero p {
+    font-size: 1.3rem;
+    color: #d1c4ff;
+  }
+  #products {
+    max-width: 1100px;
+    margin: 50px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 30px;
+    padding: 0 20px;
+  }
+  .product {
+    background: #1e1e1e;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(138,43,226,0.3);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  .product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 35px rgba(138,43,226,0.6);
+  }
+  .product img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: #121212;
+  }
+  .product-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-content h3 {
+    color: #b388ff;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+  }
+  .product-content p {
+    flex-grow: 1;
+    font-size: 1rem;
+    color: #ccc;
+    margin-bottom: 15px;
+  }
+  .price {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #8a2be2;
+    margin-bottom: 15px;
+  }
+  .order-btn {
+    background: linear-gradient(90deg, #8a2be2, #5a00d1);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 12px 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .order-btn:hover {
+    background: linear-gradient(90deg, #b45fff, #7e33e0);
+  }
+  /* Модален прозорец */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal.active {
+    display: flex;
+  }
+  .modal-content {
+    background: #222;
+    border-radius: 20px;
+    padding: 30px 25px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(138,43,226,0.8);
+    position: relative;
+    color: #ddd;
+  }
+  .modal-content h2 {
+    margin-bottom: 25px;
+    color: #b388ff;
+    font-weight: 800;
+  }
+  .close-btn {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+    font-weight: 700;
+    transition: color 0.3s ease;
+  }
+  .close-btn:hover {
+    color: #8a2be2;
+  }
+  form input {
+    width: 100%;
+    padding: 14px 12px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    background: #333;
+    color: #eee;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+    transition: background 0.3s ease;
+  }
+  form input:focus {
+    outline: none;
+    background: #4b2fd7;
+    color: white;
+    box-shadow: 0 0 12px #b388ff;
+  }
+  form button {
+    width: 100%;
+    padding: 15px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #8a2be2, #5a00d1);
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  form button:hover {
+    background: linear-gradient(90deg, #b45fff, #7e33e0);
+  }
+  footer {
+    text-align: center;
+    padding: 30px 10px;
+    font-size: 0.9rem;
+    color: #888;
+    background: #1a1a1a;
+  }
+  @media (max-width: 600px) {
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    nav {
+      margin-top: 10px;
+      width: 100%;
+    }
+    nav a {
+      margin-left: 0;
+      margin-right: 20px;
+    }
+    .hero img.logo-hero {
+      max-width: 160px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/mnt/data/32e0fb09-0162-4f4d-9e77-cefaa53a0a6e.png" alt="Zhicata Hub Logo" class="logo" />
+  <nav>
+    <a href="#products">Продукти</a>
+    <a href="#contact">Контакт</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <img src="/mnt/data/32e0fb09-0162-4f4d-9e77-cefaa53a0a6e.png" alt="Zhicata Hub Logo" class="logo-hero" />
+  <h2>Мощни компютри и лаптопи</h2>
+  <p>Най-добрите конфигурации за гейминг и работа</p>
+</section>
+
+<section id="products"></section>
+
+<section id="contact" style="max-width: 600px; margin: 50px auto; padding: 20px; background: #1e1e1e; border-radius: 15px; box-shadow: 0 0 25px rgba(138,43,226,0.5); text-align: center;">
+  <h2>Свържете се с нас</h2>
+  <p>Имейл: <a href="mailto:cemkamenov2@gmail.com">cemkamenov2@gmail.com</a></p>
+  <p>Телефон: 0888 123 456</p>
+</section>
+
+<footer>
+  &copy; 2025 Zhicata's Hub. Всички права запазени.
+</footer>
+
+<div class="modal" id="orderModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2>Поръчай продукт</h2>
+    <form id="orderForm">
+      <input type="text" name="product" id="productName" readonly />
+      <input type="text" name="name" placeholder="Твоето име" required />
+      <input type="email" name="email" placeholder="Имейл" required />
+      <button type="submit">Изпрати поръчката</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("ohdQTEquywZHycrwr");
+
+  const products = [
+    {
+      name: "Gaming PC Ryzen 7 + RTX 4070",
+      description: "32GB RAM, 1TB SSD, Wi-Fi",
+      price: "2899 лв.",
+      image: "https://allstore.bg/userfiles/productthumbs/thumb_827953.jpg"
+    },
+    {
+      name: "Лаптоп ASUS Vivobook",
+      description: "Intel i5, 16GB RAM, 512GB SSD",
+      price: "1599 лв.",
+      image: "https://allstore.bg/userfiles/productthumbs/thumb_827953.jpg"
+    },
+    {
+      name: "Компютър за офис",
+      description: "Intel i3, 8GB RAM, 256GB SSD",
+      price: "999 лв.",
+      image: "https://allstore.bg/userfiles/productthumbs/thumb_827953.jpg"
+    }
+  ];
+
+  const productsContainer = document.getElementById("products");
+  const modal = document.getElementById("orderModal");
+  const closeModalBtn = document.getElementById("closeModal");
+  const productNameInput = document.getElementById("productName");
+  const orderForm = document.getElementById("orderForm");
+
+  function loadProducts() {
+    productsContainer.innerHTML = "";
+    products.forEach(product => {
+      const card = document.createElement("div");
+      card.className = "product";
+      card.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" />
+        <div class="product-content">
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <p class="price">${product.price}</p>
+          <button class="order-btn">Поръчай</button>
+        </div>
+      `;
+      productsContainer.appendChild(card);
+    });
+
+    const buttons = document.querySelectorAll(".order-btn");
+    buttons.forEach(button => {
+      button.addEventListener("click", e => {
+        const productName = e.target.closest(".product").querySelector("h3").textContent;
+        openModal(productName);
+      });
+    });
+  }
+
+  function openModal(productName) {
+    productNameInput.value = productName;
+    modal.classList.add("active");
+  }
+
+  function closeModal() {
+    modal.classList.remove("active");
+  }
+
+  closeModalBtn.addEventListener("click", closeModal);
+  window.addEventListener("click", e => {
+    if (e.target === modal) closeModal();
+  });
+
+  orderForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const formData = new FormData(orderForm);
+    const templateParams = {
+      product: formData.get("product"),
+      name: formData.get("name"),
+      email: formData.get("email"),
+    };
+
+    emailjs.send('service_na8be8m', 'template_731smnt', templateParams)
+      .then(() => {
+        alert("Поръчката е изпратена успешно! Благодарим!");
+        orderForm.reset();
+        closeModal();
+      }, (error) => {
+        alert("Грешка при изпращане: " + error.text);
+      });
+  });
+
+  loadProducts();
+</script>
+
+</body>
+</html>
